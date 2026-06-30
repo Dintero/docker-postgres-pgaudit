@@ -20,5 +20,5 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - run: make publish
         env:
-          TAG: docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:latest
+          REPOSITORY: docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}
           BUILDX_CACHE_ARGS: --cache-from type=gha --cache-to type=gha,mode=max

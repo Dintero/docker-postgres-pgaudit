@@ -1,4 +1,7 @@
-TAG ?= dintero/docker-postgres-pgaudit
+REPOSITORY ?= dintero/docker-postgres-pgaudit
+TAG ?= $(REPOSITORY):latest
+POSTGRES_VERSION := $(shell grep -oE 'POSTGRES_VERSION=[^ ]+' Dockerfile | cut -d= -f2)
+PUBLISH_TAGS ?= $(REPOSITORY):latest $(REPOSITORY):$(POSTGRES_VERSION)
 DOCKER_BUILDKIT ?= 1
 PLATFORMS ?= linux/amd64,linux/arm64
 BUILDX_CACHE_ARGS ?=
@@ -7,7 +10,7 @@ build:
 	docker buildx build --platform $(PLATFORMS) --tag $(TAG) $(BUILDX_CACHE_ARGS) .
 
 publish:
-	docker buildx build --platform $(PLATFORMS) --tag $(TAG) $(BUILDX_CACHE_ARGS) --push .
+	docker buildx build --platform $(PLATFORMS) $(addprefix --tag ,$(PUBLISH_TAGS)) $(BUILDX_CACHE_ARGS) --push .
 
 test:
 	docker rm -f pgaudit-test >/dev/null 2>&1 || true
